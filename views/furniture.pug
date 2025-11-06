@@ -1,0 +1,51 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title View Furniture Stock - Mayondo Wood & Furniture Ltd
+    link(rel="stylesheet", href="/css/view_stock.css")
+  body
+    .overlay
+      header.navbar
+        .logo-container
+          img.logo(src="/images/Mayondo_Wood_Furniture_Store_Logo.png", alt="Mayondo Logo")
+          h1 Mayondo Wood & Furniture Ltd
+        nav.nav-links
+        if currentUser && currentUser.role == 'SalesAgent'
+          a(href="/agent") Back to Dashboard
+          a(href="/registeredWood") View Wood Stock
+          a.logout(href="/logout") Logout
+        else if currentUser && currentUser.role == 'Manager'
+          a(href="/manager") Back to Dashboard
+          a(href="/registeredWood") View Wood Stock
+          a.logout(href="/logout") Logout
+
+      main.container
+        .card
+          h2 Available Furniture Stock
+          if furnitureStock.length
+            table
+              thead
+                tr
+                  th Image
+                  th Name of Furniture
+                  th Product Price (UGX)
+                  th Quantity
+                  th Quality
+                  th Date
+              tbody
+                each item in furnitureStock
+                  tr
+                    td 
+                      if item.image
+                        img.product-img(src=item.image, alt=item.name)
+                      else
+                        span No Image
+                    td #{item.furnitureName}
+                    td #{item.productPrice.toLocaleString()}
+                    td #{item.quantity}
+                    td #{item.quality}
+                    td #{item.date.toDateString()}
+          else
+            p(style="text-align:center; color:gray;") No furniture stock available yet.

@@ -1,0 +1,21 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  title Password Reset Sent
+  link(rel='stylesheet' href='css/reset_success.css')
+.overlay
+.container
+  header
+    img.logo(src='images/Mayondo_Wood_Furniture_Store_Logo.png' alt='Mayondo Logo')
+    h1 Mayondo Wood &amp; Furniture Ltd
+  if success_msg.length
+    .alert.success #{success_msg}
+  if error_msg.length
+    .alert.error #{error_msg}
+  .card
+    h2 Check Your Email
+    p
+      | We have sent a password reset link to your registered email address.
+      | Please check your inbox and follow the instructions to reset your password.
+    a.btn.back(href='/login') Return to Login

@@ -1,0 +1,166 @@
+/* Reset defaults */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url("../images/wood_background_2.jpg") no-repeat center center fixed;
+  background-size: cover;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle overlay for readability */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(34, 34, 34, 0.45);
+  z-index: 0;
+}
+
+.container {
+  text-align: center;
+  width: 90%;
+  max-width: 450px;
+  background: rgba(248, 228, 228, 0.9);
+  border-radius: 15px;
+  padding: 40px 30px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(8px);
+  position: relative;
+  z-index: 1;
+  animation: fadeIn 1.2s ease;
+  font-style: italic;
+}
+
+header {
+  margin-bottom: 25px;
+}
+
+.logo {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  margin-bottom: 10px;
+  animation: float 3s ease-in-out infinite;
+}
+
+h1 {
+  font-size: 1.7rem;
+  color: #2c3e50;
+  font-weight: 600;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+
+.card h2 {
+  font-size: 1.4rem;
+  color: #3b3b3b;
+  margin-bottom: 10px;
+}
+
+.card p {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.btn {
+  text-decoration: none;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.btn.signup {
+  background: #c18632;
+  color: white;
+  box-shadow: 0 4px 10px #f2b55f;
+}
+
+.btn.signup:hover {
+  background: #9b600d;
+  transform: translateY(-2px);
+}
+
+.btn.login {
+  background: #c18632;
+  color: white;
+  box-shadow: 0 4px 10px #f2b55f;
+}
+
+.btn.login:hover {
+  background: #9b600d;
+  transform: translateY(-2px);
+}
+
+/* Hover lift for the card */
+.container:hover {
+  transform: translateY(-3px);
+  transition: transform 0.3s ease;
+}
+
+/* Simple fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Floating logo animation */
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* Responsive layout */
+@media (max-width: 480px) {
+  .container {
+    padding: 30px 20px;
+  }
+
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  .btn {
+    padding: 10px 22px;
+    font-size: 0.9rem;
+  }
+
+  .logo {
+    width: 70px;
+    height: 70px;
+  }
+}

@@ -1,0 +1,63 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  title Sales Agent Dashboard - Mayondo Wood &amp; Furniture Ltd
+  link(rel='stylesheet' href='css/agent.css')
+.overlay
+  header.navbar
+    .logo-container
+      img.logo(src='images/Mayondo_Wood_Furniture_Store_Logo.png' alt='Mayondo Logo')
+      h1 Mayondo Wood &amp; Furniture Ltd
+    nav.nav-links
+      a(href='/registeredFurniture') View Furniture Stock
+      a(href='/registeredWood') View Wood Stock
+      a.logout(href='/logout') Logout
+  if success_msg.length
+    .alert.success #{success_msg}
+  if error_msg.length
+    .alert.error #{error_msg}
+  main.container
+    .card
+      h2 Record a Sale
+      form#salesForm(action='/agent' method='POST')
+        .form-group
+          label(for='customerName') Customer Name
+          input#customerName(type='text' name='customerName' required='' placeholder="Enter customer's full name")
+        .form-group
+          label(for='productType') Type of Product
+          select#productType(name='productType' required='')
+            option(value='') Select type
+            option(value='Furniture') Furniture
+            option(value='Wood') Wood
+        .form-group
+          label(for='productName') Name of Product
+          input#productName(type='text' name='productName' required='' placeholder='Enter product name')
+        .form-group
+          label(for='quantity') Quantity Sold
+          input#quantity(type='number' name='quantity' required='' min='1')
+        .form-group
+          label(for='unitPrice') Unit Price (UGX)
+          input#unitPrice(type='number' name='unitPrice' required='' min='0')
+        .form-group.transport
+          label
+            input#transport(type='checkbox' name='transport')
+            |Include Transport (adds 5% to total)
+        .form-group
+          label(for='paymentType') Type of Payment
+          select#paymentType(name='paymentType' required='')
+            option(value='') Select payment method
+            option(value='Cash') Cash
+            option(value='Cheque') Cheque
+            option(value='Bank Overdraft') Bank Overdraft
+        .form-group
+          label(for='salesAgent') Sales Agent Name
+          input#salesAgent(type='text' name='salesAgent' required='' placeholder='Enter your name')
+        .form-group
+          label(for='date') Date of Sale
+          input#date(type='date' name='date' required='')
+        .form-group.total
+          label(for='totalPrice') Total Price (UGX)
+          input#totalPrice(type='number' name='totalPrice' readonly='' placeholder='Auto-calculated')
+        button.btn(type='submit') Record Sale
+script(src='js/agent.js')

@@ -1,0 +1,37 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  title Register Furniture Stock
+  link(rel='stylesheet' href='css/stock.css')
+.overlay
+  .container
+    header
+      img.logo(src='images/Mayondo_Wood_Furniture_Store_Logo.png' alt='Mayondo Logo')
+      h1 Mayondo Wood &amp; Furniture Ltd
+    .card
+      h2 Register Furniture Stock
+      form(action='/registerFurniture' method='POST' enctype='multipart/form-data')
+        .form-group
+          label(for='type') Name of Furniture
+          input#type(type='text' name='furnitureName' required='' placeholder='Enter furniture type (e.g., Chair, Table)')
+        .form-group
+          label(for='productPrice') Product Price (UGX)
+          input#productPrice(type='number' name='productPrice' required='' min='0')
+        .form-group
+          label(for='quantity') Quantity
+          input#quantity(type='number' name='quantity' required='' min='1')
+        .form-group
+          label(for='quality') Quality of Product
+          select#quality(name='quality' required='')
+            option(value='') Select Quality
+            option(value='High') High
+            option(value='Medium') Medium
+            option(value='Low') Low
+        .form-group
+          label(for='date') Date
+          input#date(type='date' name='date' required='')
+        .form-group
+          label(for='image') Upload Image
+          input#image(type='file' name='image' accept='image/*' required='')
+        button.btn(type='submit') Register Furniture Stock

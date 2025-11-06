@@ -1,0 +1,36 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  title Sign Up
+  link(rel='stylesheet' href='css/signup.css')
+.overlay
+.container
+  header
+    img.logo(src='images/Mayondo_Wood_Furniture_Store_Logo.png' alt='Mayondo Logo')
+    h1 Mayondo Wood &amp; Furniture Ltd.
+  if success_msg.length
+   .alert.success #{success_msg}
+  if error_msg.length
+   .alert.error #{error_msg}
+  .card
+    form(action='/register' method='POST')
+      .form-group
+        label(for='name') Full Name
+        input#name(type='text' name='name' placeholder='Enter your full name' required='')
+      .form-group
+        label(for='email') Email Address
+        input#email(type='email' name='email' placeholder='Enter your email' required='')
+      .form-group
+        label(for='password') Password
+        input#password(type='password' name='password' placeholder='Enter your password' required='')
+      .form-group
+        label(for='role') Role
+        select#role(name='role' required='')
+          option(value='' disabled='' selected='') Select your role
+          option(value='Manager') Manager
+          option(value='Sales-Agent') Sales-Agent
+      button.btn.signup(type='submit') Sign Up
+      p.login-link
+        | Already have an account? 
+        a(href='/login') Login

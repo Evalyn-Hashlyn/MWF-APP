@@ -1,0 +1,49 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  title Register Wood Stock
+  link(rel='stylesheet' href='css/stock.css')
+.overlay
+  .container
+    header
+      img.logo(src='images/Mayondo_Wood_Furniture_Store_Logo.png' alt='Mayondo Logo')
+      h1 Mayondo Wood &amp; Furniture Ltd
+    .card
+      h2 Register Wood Stock
+      form(action='/registerWood' method='POST' enctype='multipart/form-data')
+        .form-group
+          label(for='name') Wood Name
+          input#name(type='text' name='name' placeholder="'E.g., Oak, Mahogany'")
+        .form-group
+          label(for='type') Type of Wood
+          input#type(type='text' name='type' placeholder='E.g., Hard, Soft')
+        .form-group
+          label(for='supplier') Supplier Name
+          input#supplier(type='text' name='supplier' placeholder='Enter supplier name')
+        .form-group
+          label(for='productPrice') Product Price (UGX)
+          input#productPrice(type='number' name='productPrice' required='' min='0')
+        .form-group
+          label(for='quantity') Quantity
+          input#quantity(type='number' name='quantity' required='' min='1')
+        .form-group
+          label(for='quality') Quality of Product
+          select#quality(name='quality' required='')
+            option(value='') Select Quality
+            option(value='High') High
+            option(value='Medium') Medium
+            option(value='Low') Low
+        .form-group
+          label(for='color') Color
+          input#color(type='text' name='color' placeholder='Enter color')
+        .form-group
+          label(for='measurements') Measurements
+          input#measurements(type='text' name='measurements' placeholder='Enter measurements (e.g., 2m x 10cm)')
+        .form-group
+          label(for='date') Date
+          input#date(type='date' name='date' required='')
+        .form-group
+          label(for='image') Upload Image
+          input#image(type='file' name='image' accept='image/*' required='')
+        button.btn(type='submit') Register Wood Stock

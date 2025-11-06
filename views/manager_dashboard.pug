@@ -1,0 +1,79 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  title Manager
+  link(rel='stylesheet' href='css/manager.css')
+  link(rel='stylesheet' href='css/chart.css')
+  link(rel)
+header.navbar
+  .brand
+    img.logo(src='images/Mayondo_Wood_Furniture_Store_Logo.png' alt='Mayondo Logo')
+    h1 Mayondo Wood &amp; Furniture Ltd
+  .nav-links
+    a(href='/registeredFurniture') View Furniture Stock
+    a(href='/registeredWood') View Wood Stock
+    a(href='#') View Stock Report
+    a(href='#') view Sales Report
+    a.logout(href='/logout') Logout
+  if success_msg.length
+    .alert.success #{success_msg}
+  if error_msg.length
+    .alert.error #{error_msg}
+
+// Main Dashboard
+main.dashboard
+  h2.welcome Manager Dashboard
+  p.subtitle Manage inventory, monitor sales, and track performance efficiently.
+  // Quick Summary Section
+  section.summary-section
+    .summary-card
+      .icon &#x1F4E6;
+      .summary-info
+        h3 Total Products
+        p #{totalProducts} items
+    .summary-card
+      .icon &#x1FAB5;
+      .summary-info
+        h3 Low Stock
+        p #{lowStock} items
+    .summary-card
+      .icon &#x1F4B0;
+      .summary-info
+        h3 Total Sales
+        p UGX #{totalSales.toLocaleString()}
+    .summary-card
+      .icon &#x1F9FE;
+      .summary-info
+        h3 Pending Reports
+        p #{pendingReports} reports
+  section.charts
+    .chart-container
+      h3 Stock Distribution
+      canvas#stockChart(width='400' height='200')
+    .chart-container
+      h3 Sales Over Time
+      canvas#salesChart(width='400' height='200')
+  // Main Functional Cards
+  .card-container
+    // Register Furniture
+    .card
+      img(src='images/sheesham wood 4 seater.jpg' alt='Furniture Stock')
+      .card-content
+        h3 Register Furniture Stock
+        p Add new furniture products to the inventory.
+        a.btn(href='/registerFurniture') Register Furniture
+    // Register Wood
+    .card
+      img(src='images/wood stock.jpg' alt='Wood Stock')
+      .card-content
+        h3 Register Wood Stock
+        p Record new wood stock.
+        a.btn(href='/registerWood') Register Wood
+script(src='https://cdn.jsdelivr.net/npm/chart.js')
+script.
+  window.stockData = [#{furnitureCount}, #{woodCount}];
+  window.salesLabels = !{JSON.stringify(salesLabels)};
+  window.salesValues = !{JSON.stringify(salesValues)};
+script(src='js/chart.js')
+script(src='js/flash.js')

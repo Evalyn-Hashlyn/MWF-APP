@@ -1,0 +1,33 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  title Login
+link(rel='stylesheet' href='css/login.css')
+.overlay
+.container
+  header
+    img.logo(src='images/Mayondo_Wood_Furniture_Store_Logo.png' alt='Mayondo Logo')
+    h1 Mayondo Wood &amp; Furniture Ltd
+  if success_msg.length
+    .alert.success #{success_msg}
+  if error_msg.length
+    .alert.error #{error_msg}
+  .card
+    h2 Welcome Back
+    form(action='/login' method='POST')
+      .form-group
+        label(for='email') Email Address
+        input#email(type='email' name='email' placeholder='Enter your email' required='')
+      .form-group
+        label(for='password') Password
+        input#password(type='password' name='password' placeholder='Enter your password' required='')
+      .form-options
+        label
+          input(type='checkbox' name='remember')
+          | Remember me
+        a.forgot(href='/reset') Forgot Password?
+      button.btn.login(type='submit') Login
+      p.signup-link
+        | Do not have an account? 
+        a(href='/register') Sign Up
