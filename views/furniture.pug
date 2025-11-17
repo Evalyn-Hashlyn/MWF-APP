@@ -12,15 +12,14 @@ html(lang="en")
           img.logo(src="/images/Mayondo_Wood_Furniture_Store_Logo.png", alt="Mayondo Logo")
           h1 Mayondo Wood & Furniture Ltd
         nav.nav-links
-        if currentUser && currentUser.role == 'SalesAgent'
-          a(href="/agent") Back to Dashboard
-          a(href="/registeredWood") View Wood Stock
-          a.logout(href="/logout") Logout
-        else if currentUser && currentUser.role == 'Manager'
-          a(href="/manager") Back to Dashboard
-          a(href="/registeredWood") View Wood Stock
-          a.logout(href="/logout") Logout
-
+          if currentUser && currentUser.role == 'Sales Agent'
+              a(href="/agent") Back to Dashboard
+              a(href="/registeredWood") View Wood Stock
+              a.logout(href="/logout") Logout
+          else if currentUser && currentUser.role == 'Manager'
+              a(href="/manager") Back to Dashboard
+              a(href="/registeredWood") View Wood Stock
+              a.logout(href="/logout") Logout
       main.container
         .card
           h2 Available Furniture Stock
@@ -49,3 +48,5 @@ html(lang="en")
                     td #{item.date.toDateString()}
           else
             p(style="text-align:center; color:gray;") No furniture stock available yet.
+            p(style="color: white; text-align:center;") User: #{currentUser ? currentUser.role : 'Not logged in'}
+

@@ -1,0 +1,86 @@
+.container {
+  padding: 40px 20px;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #fff;
+}
+
+.metrics {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.metric-card {
+  background: rgba(247,199,199,0.9);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  width: 200px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.metric-card h3 {
+  margin-bottom: 10px;
+  font-size: 16px;
+  
+}
+
+.metric-card p {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.stock-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255,255,255,0.9);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+
+.stock-table th, .stock-table td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.stock-table th {
+  background-color: #84520d;
+  color: white;
+}
+
+.stock-table tr.low-stock {
+  background-color: #f8d7da;
+  font-weight: bold;
+}
+
+.stock-table tr:hover {
+  background-color: #f2f2f2;
+}
+
+.stock-table h3{
+    color: #fff;
+}
+
+.charts {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.chart-container {
+  background: rgba(247,199,199,0.9);
+  padding: 20px;
+  border-radius: 12px;
+  width: 400px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}

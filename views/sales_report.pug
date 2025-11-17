@@ -1,0 +1,74 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Sales Report - Mayondo Wood & Furniture Ltd
+    link(rel="stylesheet", href="/css/manager.css")
+  body
+    header.navbar
+      .logo-container
+        img.logo(src="/images/Mayondo_Wood_Furniture_Store_Logo.png" alt="Company Logo")
+        h1 Mayondo Wood & Furniture Ltd
+      nav.nav-links
+        a(href="/manager") Dashboard
+        a(href="/registerFurniture") Register Furniture
+        a(href="/registerWood") Register Wood
+        a(href="/registeredFurniture") View Furniture Stock
+        a(href="/registeredWood") View Wood Stock
+        a.logout(href="/logout") Logout
+
+    if success_msg && success_msg.length
+      .alert.success= success_msg
+    if error_msg && error_msg.length
+      .alert.error= error_msg
+
+    main.container
+      h2 Sales Report
+
+      // Filter form
+      form.filter-form(action="/salesReport" method="GET")
+        .form-group
+          label(for="startDate") From:
+          input#startDate(type="date" name="startDate" value=startDate)
+        .form-group
+          label(for="endDate") To:
+          input#endDate(type="date" name="endDate" value=endDate)
+        .form-group
+          label(for="productType") Product Type:
+          select#productType(name="productType")
+            option(value="All" selected=productType==="All") All
+            option(value="Furniture" selected=productType==="Furniture") Furniture
+            option(value="Wood" selected=productType==="Wood") Wood
+        button.btn(type="submit") Filter
+
+      // Sales table
+      if sales && sales.length
+        table.sales-table
+          thead
+            tr
+              th Date
+              th Customer Name
+              th Product Type
+              th Product Name
+              th Quantity
+              th Unit Price (UGX)
+              th Total (UGX)
+              th Payment
+              th Sales Agent
+          tbody
+            each sale in sales
+              tr
+                td #{new Date(sale.date).toLocaleDateString()}
+                td #{sale.customerName}
+                td #{sale.productType}
+                td #{sale.productName}
+                td #{sale.quantity}
+                td #{sale.unitPrice.toLocaleString()}
+                td #{sale.totalPrice.toLocaleString()}
+                td #{sale.paymentType}
+                td #{sale.salesAgent}
+        .total-section
+          h3 Total Revenue: UGX #{totalRevenue.toLocaleString()}
+      else
+        p No sales found for the selected filters.

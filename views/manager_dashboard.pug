@@ -2,7 +2,7 @@ doctype html
 head
   meta(charset='UTF-8')
   meta(name='viewport' content='width=device-width, initial-scale=1.0')
-  title Manager
+  title Manager Dashboard
   link(rel='stylesheet' href='css/manager.css')
   link(rel='stylesheet' href='css/chart.css')
   link(rel)
@@ -13,14 +13,13 @@ header.navbar
   .nav-links
     a(href='/registeredFurniture') View Furniture Stock
     a(href='/registeredWood') View Wood Stock
-    a(href='#') View Stock Report
-    a(href='#') view Sales Report
+    a(href='/StockReport') View Stock Report
+    a(href='/salesReport') view Sales Report
     a.logout(href='/logout') Logout
   if success_msg.length
     .alert.success #{success_msg}
   if error_msg.length
     .alert.error #{error_msg}
-
 // Main Dashboard
 main.dashboard
   h2.welcome Manager Dashboard
@@ -54,6 +53,24 @@ main.dashboard
     .chart-container
       h3 Sales Over Time
       canvas#salesChart(width='400' height='200')
+  // --- Registered Users' List ---
+  .registered-users
+    h2 Registered Users
+    if registeredUser && registeredUser.length
+      table
+        thead
+          tr
+            th Full Name
+            th Email Address
+            th Role
+        tbody
+          each user in registeredUser
+            tr
+              td #{user.name}
+              td #{user.email}
+              td #{user.role}
+    else         
+        p No users registered yet.
   // Main Functional Cards
   .card-container
     // Register Furniture

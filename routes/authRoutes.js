@@ -144,112 +144,178 @@ router.get("/confirm", (req,res) => {
   res.render("reset_confirm")
 });
 
-router.get("/manager", ensureAuthenticated, ensureManager, async(req, res) => {
+router.get("/manager", ensureAuthenticated, ensureManager, async (req, res) => {
   try {
-    // Count total furniture and wood stock
+    const registeredUser = await Registration.find().lean();
+    // 1️⃣ Basic counts
     const furnitureCount = await Furniture.countDocuments();
     const woodCount = await Wood.countDocuments();
     const totalProducts = furnitureCount + woodCount;
 
-    // Get sales for the last 7 days (for the chart)
-    const salesData = await Sale.aggregate([
+    // 2️⃣ Low stock threshold (example: less than 10)
+    const lowStock = await Furniture.countDocuments({ quantity: { $lt: 10 } }) +
+                     await Wood.countDocuments({ quantity: { $lt: 10 } });
+
+    // 3️⃣ Total sales
+    const totalSalesAgg = await Sale.aggregate([
+      { $group: { _id: null, total: { $sum: "$totalPrice" } } }
+    ]);
+    const totalSales = totalSalesAgg.length ? totalSalesAgg[0].total : 0;
+
+    // 4️⃣ Pending reports (you can adjust logic)
+    const pendingReports = 3; // Placeholder, replace with real data if needed
+
+    // 5️⃣ Sales chart (last 7 days)
+    const today = new Date();
+    const sevenDaysAgo = new Date(today);
+    sevenDaysAgo.setDate(today.getDate() - 6);
+
+    const sales = await Sale.aggregate([
       {
-        $match: { date: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } }
+        $match: {
+          date: { $gte: sevenDaysAgo, $lte: today }
+        }
       },
       {
         $group: {
           _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
-          total: { $sum: "$price" }
+          total: { $sum: "$totalPrice" }
         }
       },
-      { $sort: { _id: 1 } }
+      { $sort: { "_id": 1 } }
     ]);
 
-    // Prepare sales chart data
-    const salesLabels = salesData.length
-      ? salesData.map(s => s._id)
-      : ["No Sales"];
-    const salesValues = salesData.length
-      ? salesData.map(s => s.total)
-      : [0];
+    // Generate labels for last 7 days (ensuring all days appear)
+    const salesLabels = [];
+    const salesValues = [];
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(today.getDate() - i);
+      const dateStr = date.toISOString().slice(0, 10);
+      const sale = sales.find(s => s._id === dateStr);
+      salesLabels.push(date.toLocaleDateString("en-US", { weekday: "short" }));
+      salesValues.push(sale ? sale.total : 0);
+    }
 
-    // Count low stock items (quantity < 5)
-    const lowFurniture = await Furniture.countDocuments({ quantity: { $lt: 5 } });
-    const lowWood = await Wood.countDocuments({ quantity: { $lt: 5 } });
-    const lowStock = lowFurniture + lowWood;
-
-    // Calculate total sales (sum of all sales)
-    const totalSalesResult = await Sale.aggregate([
-      { $group: { _id: null, total: { $sum: "$price" } } }
-    ]);
-    const totalSales = totalSalesResult[0]?.total || 0;
-
-    // Pending reports (for demo; replace with real logic)
-    const pendingReports = 2;
-
-    // Render the dashboard and pass live data
+    // ✅ Render the dashboard
     res.render("manager_dashboard", {
+      registeredUser,
       totalProducts,
       lowStock,
       totalSales,
       pendingReports,
       furnitureCount,
       woodCount,
-      salesLabels,   // leave raw arrays
-      salesValues,    // leave raw arrays
+      salesLabels,
+      salesValues,
       success_msg: req.flash("success_msg"),
       error_msg: req.flash("error_msg")
     });
+
   } catch (error) {
     console.error("Error loading manager dashboard:", error.message);
-    res.status(500).send("Server Error - Could not load dashboard.");
+    req.flash("error_msg", "Error loading dashboard data.");
+    res.redirect("/login");
   }
 });
 
 router.get("/agent", ensureAuthenticated, ensureSalesAgent, (req, res) => {
   res.render("agent_dashboard", {
      success_msg: req.flash("success_msg"),
-     error_msg: req.flash("error_msg")
+     error_msg: req.flash("error_msg"),
+     currentUser: req.user
   });
 });
 
 router.post("/agent", ensureAuthenticated, ensureSalesAgent, async (req, res) => {
   try {
-    let { customerName, productType, productName, quantity, unitPrice, transport, paymentType, salesAgent, date } = req.body;
+    console.log("🧾 Sale form data received:", req.body);
 
-    // Convert to numbers
-    quantity = parseFloat(quantity);
-    unitPrice = parseFloat(unitPrice);
+    // Destructure values from req.body
+    let {
+      customerName,
+      productType,
+      productName,
+      quantity,
+      unitPrice,
+      transport,
+      paymentType,
+      salesAgent,
+      date
+    } = req.body;
 
-    // Calculate total price
+    // Coerce numeric types
+    quantity = Number(quantity) || 0;
+    unitPrice = Number(unitPrice) || 0;
+    const transportIncluded = (transport === 'on' || transport === true || transport === 'true');
+
+    // Server-side total calculation (authoritative)
     let totalPrice = quantity * unitPrice;
-    if (transport) {
-      totalPrice *= 1.05; // Add 5% if transport included
-    }
+    if (transportIncluded) totalPrice = totalPrice * 1.05;
 
-    // Create and save new sale
+    // Create new sale document
     const newSale = new Sale({
       customerName,
       productType,
       productName,
       quantity,
       unitPrice,
+      totalPrice: Number(totalPrice.toFixed(2)),
       paymentType,
       salesAgent,
-      date: new Date(date),
-      totalPrice: totalPrice.toFixed(2), // save formatted total
+      date: date ? new Date(date) : new Date()
     });
 
     await newSale.save();
 
+    console.log("✅ Sale saved:", newSale);
+
     req.flash("success_msg", "✅ Sale recorded successfully!");
     res.redirect("/agent");
   } catch (error) {
-    console.error("Error recording sale:", error.message);
+    console.error("Error recording sale:", error);
     req.flash("error_msg", "❌ Error recording sale. Please try again.");
     res.redirect("/agent");
   }
 });
 
-//last line
+router.get("/salesReport", ensureAuthenticated, ensureManager,  async (req, res) => {
+  try {
+    // Get filters from query params
+    const { startDate, endDate, productType = "All" } = req.query;
+
+    // Build query object
+    const query = {};
+    if (startDate || endDate) {
+      query.date = {};
+      if (startDate) query.date.$gte = new Date(startDate);
+      if (endDate) query.date.$lte = new Date(endDate);
+    }
+    if (productType !== "All") {
+      query.productType = productType;
+    }
+
+    // Fetch sales with applied filters
+    const sales = await Sale.find(query).sort({ date: -1 }).lean();
+
+    // Compute total revenue
+    const totalRevenue = sales.reduce((sum, sale) => sum + (sale.totalPrice || 0), 0);
+
+    // Render report
+    res.render("sales_report", {
+      sales,
+      totalRevenue,
+      startDate: startDate || "",
+      endDate: endDate || "",
+      productType,
+      success_msg: req.flash("success_msg"),
+      error_msg: req.flash("error_msg")
+    });
+  } catch (err) {
+    console.error("Error generating sales report:", err);
+    req.flash("error_msg", "Failed to load sales report.");
+    res.redirect("/manager");
+  }
+});
+
 module.exports = router;

@@ -79,4 +79,58 @@ router.get("/registeredWood",  ensureAuthenticated, async(req, res)=>{
   }
 });
 
+router.get('/StockReport', ensureAuthenticated, ensureManager, async (req, res) => {
+  try {
+    const furniture = await Furniture.find();
+    const wood = await Wood.find();
+
+    const stockItems = [
+      ...furniture.map(f => ({
+        name: f.furnitureName,
+        type: 'Furniture',
+        quantity: f.quantity,
+        price: f.productPrice,
+        threshold: 5 // low stock threshold
+      })),
+      ...wood.map(w => ({
+        name: w.name,
+        type: 'Wood',
+        quantity: w.quantity,
+        price: w.productPrice,
+        threshold: 10
+      }))
+    ];
+
+    // Metrics
+    const totalProducts = stockItems.length;
+    const totalValue = stockItems.reduce((sum, item) => sum + item.quantity * item.price, 0);
+    const lowStockCount = stockItems.filter(i => i.quantity < i.threshold).length;
+
+    // Chart data
+    const stockDistribution = {
+      labels: ['Furniture', 'Wood'],
+      values: [furniture.length, wood.length]
+    };
+
+    const lowStockSummary = {
+      labels: stockItems.filter(i => i.quantity < i.threshold).map(i => i.name),
+      values: stockItems.filter(i => i.quantity < i.threshold).map(i => i.quantity)
+    };
+
+    res.render('stock_report', {
+      stockItems,
+      totalProducts,
+      totalValue,
+      lowStockCount,
+      stockDistribution,
+      lowStockSummary
+    });
+  } catch (error) {
+    console.error(error);
+    req.flash('error_msg', 'Error generating stock report');
+    res.redirect('/manager');
+  }
+});
+
+
 module.exports= router;

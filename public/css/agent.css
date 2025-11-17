@@ -10,6 +10,7 @@ body {
 
 .overlay {
   min-height: 100vh;
+  background: transparent
 }
 
 .navbar {

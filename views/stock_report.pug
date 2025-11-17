@@ -1,0 +1,67 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Stock Report - Mayondo Wood & Furniture Ltd
+    link(rel="stylesheet" href="/css/manager.css")
+    link(rel="stylesheet" href="/css/stock_report.css")
+    script(src="https://cdn.jsdelivr.net/npm/chart.js")
+  body
+    header.navbar
+      .brand
+        img.logo(src='images/Mayondo_Wood_Furniture_Store_Logo.png' alt='Mayondo Logo')
+        h1 Mayondo Wood & Furniture Ltd
+      .nav-links
+        a(href='/manager') Back to Dashboard
+        a.logout(href='/logout') Logout
+
+    main.container
+      h2 Stock Report
+      // Summary Metrics
+      section.metrics
+        .metric-card
+          h3 Total Products
+          p #{totalProducts} items
+        .metric-card
+          h3 Total Inventory Value
+          p UGX #{totalValue.toLocaleString()}
+        .metric-card
+          h3 Low Stock Items
+          p #{lowStockCount} items
+
+      // Stock Table
+      section.stock-table
+        h3 Furniture & Wood Stock
+        table
+          thead
+            tr
+              th Product Name
+              th Type
+              th Quantity
+              th Unit Price (UGX)
+              th Total Value (UGX)
+              th Status
+          tbody
+            each item in stockItems
+              tr(class=item.quantity < item.threshold ? 'low-stock' : '')
+                td #{item.name}
+                td #{item.type}
+                td #{item.quantity}
+                td #{item.price.toLocaleString()}
+                td #{(item.quantity * item.price).toLocaleString()}
+                td #{item.quantity < item.threshold ? 'Low' : 'OK'}
+
+      // Charts Section
+      section.charts
+        .chart-container
+          h3 Stock Distribution
+          canvas#stockDistributionChart(width='400' height='200')
+        .chart-container
+          h3 Low Stock Items
+          canvas#lowStockChart(width='400' height='200') 
+    script.
+        const stockData = !{JSON.stringify(stockDistribution)};
+        const lowStockData = !{JSON.stringify(lowStockSummary)};
+    script(src='js/stock.js')
+      

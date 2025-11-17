@@ -44,7 +44,6 @@ app.use(express.static(path.join(__dirname, "public"))); //serving static files
 app.use(express.json());
 app.use('/public/images/uploads', express.static(__dirname + '/public/images/uploads'));
 
-
 //Express session configs
 app.use(expressSession);
 app.use(passport.initialize());
@@ -63,7 +62,7 @@ app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg');
   res.locals.error_msg = req.flash('error_msg');
   res.locals.error = req.flash('error'); // passport often uses this
-  res.locals.currentUser = req.user || null;
+  res.locals.currentUser = req.user || req.session.user || null;
   next();
 });
 
