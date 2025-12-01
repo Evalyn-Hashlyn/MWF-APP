@@ -1,30 +1,9 @@
 body {
-  font-family: "Poppins", sans-serif;
-  /* height: 100vh; */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: url("../images/wood_background_2.jpg") no-repeat center center fixed;
-  background-size: cover;
-  /* position: relative;
-  overflow: hidden; */
-  /* margin: 0;
+  margin: 0;
   font-family: 'Poppins', sans-serif;
   background: url("../images/wood_background_2.jpg") no-repeat center center fixed;
-  color: #333; */
-}
-
-.overlay {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-}
-
-.container {
-  text-align: center;
-  width: 100%;
-  max-width: 700px;
+  background-size: cover;
+  font-style: italic;
 }
 
 .navbar {
@@ -34,6 +13,7 @@ body {
   background: #84520d;
   padding: 15px 40px;
   color: #fff;
+  
 }
 
 .navbar h1 {
@@ -53,6 +33,22 @@ body {
   color: #a1887f;
 }
 
+.overlay {
+  display: flex;
+  flex-direction: column; /* stack children vertically */
+  justify-content: flex-start; /* start from top */
+  align-items: stretch;
+  min-height: 80vh;
+  padding-top: 0px;
+}
+
+.container {
+  text-align: center;
+  width: 100%;
+  max-width: 700px;
+  margin: 20px auto; /* centers card horizontally */
+}
+
 
 .logo-container {
   display: flex;
@@ -60,16 +56,16 @@ body {
 }
 
 .logo {
-    width: 90px;
+  width: 90px;
   height: 90px;
   object-fit: contain;
-  margin-bottom: 10px;
+  margin-right: 15px;
   animation: float 3s ease-in-out infinite;
 }
 
 h1 {
   font-size: 26px;
-  color: rgb(255, 255, 255);
+  color: white;
   margin-bottom: 30px;
 }
 
@@ -134,13 +130,7 @@ input[type="file"] {
 }
 
 @keyframes float {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-  100% {
-    transform: translateY(0);
-  }
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
 }

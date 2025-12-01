@@ -132,5 +132,112 @@ router.get('/StockReport', ensureAuthenticated, ensureManager, async (req, res) 
   }
 });
 
+// ---------- EDIT / UPDATE Furniture ----------
+router.get("/registeredFurniture/:id/edit", ensureAuthenticated, ensureManager, async (req, res) => {
+  try {
+    const furniture = await Furniture.findById(req.params.id).lean();
+    if (!furniture) {
+      req.flash("error_msg", "Furniture not found");
+      return res.redirect("/registeredFurniture");
+    }
+    res.render("update_furniture", { furniture, currentUser: req.user });
+  } catch (err) {
+    console.error(err);
+    req.flash("error_msg", "Error loading edit form");
+    res.redirect("/registeredFurniture");
+  }
+});
+
+router.post("/registeredFurniture/:id/update", ensureAuthenticated, ensureManager, upload.single('image'), async (req, res) => {
+  try {
+    const updateData = {
+      furnitureName: req.body.furnitureName,
+      productPrice: Number(req.body.productPrice) || 0,
+      quantity: Number(req.body.quantity) || 0,
+      quality: req.body.quality,
+      date: req.body.date ? new Date(req.body.date) : undefined,
+      // add other fields as needed
+    };
+
+    // If an image was uploaded, set path
+    if (req.file && req.file.path) updateData.image = req.file.path;
+
+    await Furniture.findByIdAndUpdate(req.params.id, { $set: updateData });
+    req.flash("success_msg", "✅ Furniture updated successfully");
+    res.redirect("/registeredFurniture");
+  } catch (err) {
+    console.error("Error updating furniture:", err);
+    req.flash("error_msg", "❌ Failed to update furniture");
+    res.redirect("/registeredFurniture");
+  }
+});
+
+// ---------- DELETE Furniture ----------
+router.post("/registeredFurniture/:id/delete", ensureAuthenticated, ensureManager, async (req, res) => {
+  try {
+    await Furniture.findByIdAndDelete(req.params.id);
+    req.flash("success_msg", "✅ Furniture deleted");
+    res.redirect("/registeredFurniture");
+  } catch (err) {
+    console.error("Error deleting furniture:", err);
+    req.flash("error_msg", "❌ Failed to delete furniture");
+    res.redirect("/registeredFurniture");
+  }
+});
+
+// ---------- EDIT / UPDATE Wood ----------
+router.get("/registeredWood/:id/edit", ensureAuthenticated, ensureManager, async (req, res) => {
+  try {
+    const wood = await Wood.findById(req.params.id).lean();
+    if (!wood) {
+      req.flash("error_msg", "Wood not found");
+      return res.redirect("/registeredWood");
+    }
+    res.render("update_wood", { wood, currentUser: req.user });
+  } catch (err) {
+    console.error(err);
+    req.flash("error_msg", "Error loading edit form");
+    res.redirect("/registeredWood");
+  }
+});
+
+router.post("/registeredWood/:id/update", ensureAuthenticated, ensureManager, upload.single('image'), async (req, res) => {
+  try {
+    const updateData = {
+      name: req.body.name,
+      type: req.body.type,
+      supplier: req.body.supplier,
+      productPrice: Number(req.body.productPrice) || 0,
+      quantity: Number(req.body.quantity) || 0,
+      quality: req.body.quality,
+      color: req.body.color,
+      measurements: req.body.measurements,
+      date: req.body.date ? new Date(req.body.date) : undefined,
+    };
+
+    if (req.file && req.file.path) updateData.image = req.file.path;
+
+    await Wood.findByIdAndUpdate(req.params.id, { $set: updateData });
+    req.flash("success_msg", "✅ Wood updated successfully");
+    res.redirect("/registeredWood");
+  } catch (err) {
+    console.error("Error updating wood:", err);
+    req.flash("error_msg", "❌ Failed to update wood");
+    res.redirect("/registeredWood");
+  }
+});
+
+// ---------- DELETE Wood ----------
+router.post("/registeredWood/:id/delete", ensureAuthenticated, ensureManager, async (req, res) => {
+  try {
+    await Wood.findByIdAndDelete(req.params.id);
+    req.flash("success_msg", "✅ Wood deleted");
+    res.redirect("/registeredWood");
+  } catch (err) {
+    console.error("Error deleting wood:", err);
+    req.flash("error_msg", "❌ Failed to delete wood");
+    res.redirect("/registeredWood");
+  }
+});
 
 module.exports= router;

@@ -18,27 +18,61 @@ router.get("/register", (req, res) => {
 });
 
 router.post("/register", async(req, res) =>{
+  const { name, email, password, role } = req.body;
+  let errors = [];
+
+  // Basic checks
+  if (!name || !email || !password || !role) {
+    errors.push("All fields are required.");
+  }
+
+  // Email format check
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (email && !emailRegex.test(email)) {
+    errors.push("Please enter a valid email address.");
+  }
+
+  // Password length check
+  if (password && password.length < 3) {
+    errors.push("Password must be at least 3 characters.");
+  }
+
+  // If there are errors, show them
+  if (errors.length > 0) {
+    return res.render("signup", {
+      success_msg: "",
+      error_msg: errors.join(" "),
+      name,
+      email,
+      role
+    });
+  }
   try {
-    const newUser = new Registration(req.body)
-    console.log(newUser)
-    let user = await Registration.findOne({
-      email: req.body.email
-    })
-    if(user){
-      return res.status(400).send('Not registered, that user already exists.')
-    }else{
-      await Registration.register(newUser, req.body.password,(error)=>{
-      if(error){
-        throw error;
-      }
-    })
-    req.flash("success_msg", "✅ Account created successfully. You can now log in.");
-    res.redirect("/landing")
+    const existingUser = await Registration.findOne({ email });
+    if (existingUser) {
+      return res.render("signup", {
+        success_msg: "",
+        error_msg: "User with this email already exists.",
+        name,
+        email,
+        role
+      });
     }
-  } catch (error) {
-    console.error(error.message)
-    req.flash("error_msg", "❌ Error creating account. Please try again.");
-    res.status(400).send('Sorry something went wrong')
+
+    const newUser = new Registration({ name, email, role });
+    await Registration.register(newUser, password);
+
+    req.flash("success_msg", "✅ Account created successfully. You can now log in.");
+    res.redirect("/landing");
+  } catch (err) {
+    console.error(err);
+    res.render("signup", {
+      success_msg: "",
+      error_msg: "Something went wrong. Please try again.",
+      name,
+      email,
+      role
+    });
   }
 });
 

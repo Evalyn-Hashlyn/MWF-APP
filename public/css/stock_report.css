@@ -10,6 +10,11 @@ h2 {
   color: #fff;
 }
 
+h3{
+  text-align: center;
+}
+
+
 .metrics {
   display: flex;
   gap: 20px;
@@ -78,7 +83,7 @@ h2 {
 }
 
 .chart-container {
-  background: rgba(247,199,199,0.9);
+  background: rgba(249, 243, 243, 0.9);
   padding: 20px;
   border-radius: 12px;
   width: 400px;

@@ -33,6 +33,8 @@ html(lang="en")
                   th Quantity
                   th Quality
                   th Date
+                  th Edit 
+                  th Delete
               tbody
                 each item in furnitureStock
                   tr
@@ -46,7 +48,19 @@ html(lang="en")
                     td #{item.quantity}
                     td #{item.quality}
                     td #{item.date.toDateString()}
+                    td
+                      // Edit link (manager only)
+                      if currentUser && currentUser.role.toLowerCase() === 'manager'
+                        a.btn.small(href=`/registeredFurniture/${item._id}/edit`) Edit
+                    td
+                        form.inline(action=`/registeredFurniture/${item._id}/delete` method="POST" onsubmit="return confirmDelete(this);")
+                          button.btn.danger(type="submit") Delete
           else
             p(style="text-align:center; color:gray;") No furniture stock available yet.
             p(style="color: white; text-align:center;") User: #{currentUser ? currentUser.role : 'Not logged in'}
+script.
+  function confirmDelete(form) {
+    return confirm("Are you sure you want to delete this item? This action cannot be undone.");
+  }
+
 

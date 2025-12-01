@@ -37,6 +37,8 @@ html(lang="en")
                   th Color
                   th Measurements
                   th Date
+                  th Edit 
+                  th Delete
               tbody
                 each item in woodStock
                   tr
@@ -54,5 +56,16 @@ html(lang="en")
                     td #{item.color} 
                     td #{item.measurements}
                     td #{item.date.toDateString()}
+                    td
+                      if currentUser && currentUser.role.toLowerCase() === 'manager'
+                        a.btn.small(href=`/registeredWood/${item._id}/edit`) Edit
+                    td
+                        form.inline(action=`/registeredWood/${item._id}/delete` method="POST" onsubmit="return confirmDelete(this);")
+                          button.btn.danger(type="submit") Delete
           else
             p(style="text-align:center; color:gray;") No wood stock available yet.
+script.
+  function confirmDelete(form) {
+    return confirm("Are you sure you want to delete this item? This action cannot be undone.");
+  }
+
